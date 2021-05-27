@@ -1,0 +1,7 @@
+/.idea
+/__pycache__
+/database
+*.pickle
+saved_features_recom.txt
+/imagenet
+/venv
