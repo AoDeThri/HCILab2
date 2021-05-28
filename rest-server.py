@@ -124,8 +124,8 @@ def getWishlist():
 @app.route("/wishlist", methods=['DELETE'])
 def delWishList():
     name = request.args["file"]
-    delImageWishlist(name)
-    return jsonify({})
+    result = delImageWishlist(name)
+    return jsonify(result)
 
 
 if __name__ == '__main__':

@@ -133,6 +133,8 @@ def delImageWishlist(name):
     with open("database/wishList", "w") as f:
         for line in lines:
             f.write(line)
+    return lines
+
 
 def getImagesWishlist():
     result = []
