@@ -16,9 +16,11 @@ export async function uploadFile(data) {
 }
 
 export async function addToWishList(data){
-  return request('', {
+  console.log(data)
+  const res = request('', {
     method: 'POST',
     data,
     prefix: WISHLIST_PREFIX,
   })
+  return res;
 }

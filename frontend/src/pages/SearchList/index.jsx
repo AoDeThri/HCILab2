@@ -112,7 +112,16 @@ class SearchList extends Component {
     }
 
     const handleAddToWishlist = (name) => {
-      console.log(name)
+      const { dispatch } = this.props
+      // const payload = {
+      //   file: name
+      // }
+      const payload = new FormData()
+      payload.append('file', name)
+      dispatch({
+        type: 'searchList/addToWishList',
+        payload,
+      })
     }
 
     return (
