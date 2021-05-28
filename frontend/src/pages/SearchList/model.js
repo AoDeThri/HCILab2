@@ -41,7 +41,7 @@ const Model = {
       return { ...state, imgList: action.payload };
     },
     changeList(state, action){
-      state.list.forEach(element => {
+      state.imgList.forEach(element => {
         if(element.name === action.payload){
           element.inWishlist = true
         }
