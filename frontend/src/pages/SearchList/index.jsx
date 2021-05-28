@@ -83,10 +83,10 @@ class SearchList extends Component {
               type = "primary" 
               htmlType="submit"
               style={{
-                left:"120px"
+                left:"128px"
               }}
             >
-              OK
+              Search
             </Button>
           </Form.Item>
         </Form>
