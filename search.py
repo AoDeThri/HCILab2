@@ -34,6 +34,7 @@ MODEL_INPUT_DEPTH = 3
 JPEG_DATA_TENSOR_NAME = 'DecodeJpeg/contents:0'
 RESIZED_INPUT_TENSOR_NAME = 'ResizeBilinear:0'
 MAX_NUM_IMAGES_PER_CLASS = 2 ** 27 - 1  # ~134M
+OSHost = "https://hcilab2-1304769744.cos.ap-shanghai.myqcloud.com/dataset/"
 
 
 # show_neighbors(random.randint(0, len(extracted_features)), indices, neighbor_list)
@@ -119,20 +120,25 @@ def recommend(imagePath, extracted_features, tagResult):
 
 def saveImageWishlist(name):
     with open("database/wishList", "a") as f:
-        f.writelines(name)
+        f.write(name + "\n")
     pass
 
 
 def delImageWishlist(name):
-    lines = (i for i in open("database/wishList", "r") if name not in i)
+    lines = []
+    with open("database/wishList", "r") as f:
+        for line in f:
+            if not line.startswith(name):
+                lines.append(line)
     with open("database/wishList", "w") as f:
-        f.writelines(lines)
+        for line in lines:
+            f.write(line)
 
 def getImagesWishlist():
     result = []
     with open("database/wishList", "r") as f:
         for line in f:
-            result.append(line)
+            result.append(line.replace("\n", ""))
     return result
     pass
 
