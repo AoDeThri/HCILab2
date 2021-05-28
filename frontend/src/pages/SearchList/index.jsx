@@ -111,6 +111,10 @@ class SearchList extends Component {
       })
     }
 
+    const handleAddToWishlist = (name) => {
+      console.log(name)
+    }
+
     return (
       <PageContainer content={content} >
         <div className={styles.cardList}>
@@ -138,6 +142,7 @@ class SearchList extends Component {
                         <Button 
                           type="primary"
                           disabled={item.inWishlist}
+                          onClick={() => handleAddToWishlist(item.name)}
                         >
                           {item.inWishlist ? "已在收藏夹中":"加入收藏夹"}
                         </Button>
