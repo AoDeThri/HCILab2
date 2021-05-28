@@ -1,5 +1,5 @@
 import request from 'umi-request';
-import { IMG_UPLOAD_PREFIX, WISHLIST_PREFIX} from "@/target"
+import { IMG_UPLOAD_PREFIX, WISHLIST_PREFIX, TAG_PREFIX } from "@/target"
 
 export async function queryFakeList(params) {
   return request('/api/fake_list', {
@@ -16,11 +16,16 @@ export async function uploadFile(data) {
 }
 
 export async function addToWishList(data){
-  console.log(data)
-  const res = request('', {
+  return request('', {
     method: 'POST',
     data,
     prefix: WISHLIST_PREFIX,
   })
-  return res;
+}
+
+export async function getAllTags(){
+  return request('', {
+    method: 'GET',
+    prefix: TAG_PREFIX
+  })
 }

@@ -44,11 +44,13 @@ print("loaded extracted_features")
 tagPath = "database/tags"
 files = os.listdir(tagPath)
 tagResult = {}
+tags = []
 for file in files:
     if file == "README.txt":
         continue
     with open(os.path.join(tagPath, file)) as openFile:
         tagName = file.split(".")[0].split("_r")[0]
+        tags.append(tagName)
         for line in openFile:
             key = int(line)
             try:
@@ -57,6 +59,7 @@ for file in files:
                 tagResult.setdefault(key, [tagName, ])
 for i in tagResult:
     tagResult[i] = list(set(tagResult[i]))
+tags = list(set(tags))
 print("tag loaded")
 
 
@@ -121,7 +124,7 @@ def addToWishlist():
 
 @app.route("/wishlist", methods=['GET'])
 def getWishlist():
-    result = getImagesWishlist()
+    result = getImagesWishlist(tagResult)
     return jsonify(result)
 
 
@@ -130,6 +133,11 @@ def delWishList():
     name = request.args["file"]
     result = delImageWishlist(name)
     return jsonify(result)
+
+
+@app.route("/tag", methods=['GET'])
+def getAllTags():
+    return jsonify(tags)
 
 
 if __name__ == '__main__':

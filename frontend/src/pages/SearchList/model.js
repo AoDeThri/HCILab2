@@ -1,9 +1,10 @@
-import { queryFakeList, uploadFile, addToWishList } from './service';
+import { queryFakeList, uploadFile, addToWishList, getAllTags } from './service';
 
 const Model = {
   namespace: 'searchList',
   state: {
-    list: [],
+    imgList: [],
+    tagList: [],
   },
   effects: {
     *fetch({ payload }, { call, put }) {
@@ -26,11 +27,18 @@ const Model = {
         type: 'changeList',
         payload: payload.get("file")
       })
+    },
+    *getAllTags({_}, {call, put}){
+      const res = yield call(getAllTags)
+      yield put({
+        type: 'queryTagList',
+        payload: Array.isArray(res) ? res : [],
+      })
     }
   },
   reducers: {
     queryList(state, action) {
-      return { ...state, list: action.payload };
+      return { ...state, imgList: action.payload };
     },
     changeList(state, action){
       state.list.forEach(element => {
@@ -39,6 +47,9 @@ const Model = {
         }
       });
       return { ...state }
+    },
+    queryTagList(state, action){
+      return { ...state, tagList: action.payload}
     }
   },
 };

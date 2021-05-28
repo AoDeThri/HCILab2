@@ -1,11 +1,20 @@
-import { Button, Card, List } from 'antd';
+import { Button, Card, List, Select, Form } from 'antd';
 import React, { Component } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 import styles from './style.less';
 import { ImgTarget } from "@/target"
 
+const { Option } = Select
+
 class Wishlist extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      tag: "all",
+    }
+  }
+
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
@@ -16,6 +25,7 @@ class Wishlist extends Component {
   render() {
     const {
       wishlist: { list },
+      searchList: { tagList },
       loading,
     } = this.props;
     const content = (
@@ -33,8 +43,32 @@ class Wishlist extends Component {
       })
     }
 
+    const extraContent = (
+      <Form>
+        <Form.Item
+          label="选择图片类型"
+        >
+          <Select
+            style={{ 
+              width: 120,
+              textAlign: "center", 
+            }}
+            defaultValue="all"
+            onChange={(value) => this.setState({
+              tag: value,
+            })}
+          >
+            <Option value="all"> all </Option>
+            {tagList.map((i) => (
+              <Option value={i}> {i} </Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
+    )
+
     return (
-      <PageContainer content={content}>
+      <PageContainer content={content} extraContent={extraContent}>
         <div className={styles.cardList}>
           <List
             rowKey="id"
@@ -50,27 +84,32 @@ class Wishlist extends Component {
             }}
             dataSource={list}
             renderItem={(item) => {
-              if(item){
+              const { tag } = this.state
+              const imgTag = item.tag
+              const hidden = !(tag === "all" || imgTag.find((i) => i === tag) !== undefined)
+              console.log(hidden)
+              if(item.file){
                 return(
                     <List.Item
-                      key={item}
+                      key={item.file}
+                      hidden={hidden}
                     >
                       <Card
                         hoverable
                         className={styles.card}
                         cover = {
                           <img
-                            src={ImgTarget + item}
+                            src={ImgTarget + item.file}
                           />
                         }
                         actions={[
                           <Button
-                            onClick={() => handleDelImg(item)}
+                            onClick={() => handleDelImg(item.file)}
                           >从收藏夹中删除</Button>
                         ]}
                       >
                         <Card.Meta
-                          title={item}
+                          title={item.file}
                         />
                       </Card>
                     </List.Item>
@@ -84,7 +123,8 @@ class Wishlist extends Component {
   }
 }
 
-export default connect(({ wishlist, loading }) => ({
+export default connect(({ wishlist, loading, searchList }) => ({
   wishlist,
+  searchList,
   loading: loading.models.wishlist,
 }))(Wishlist);

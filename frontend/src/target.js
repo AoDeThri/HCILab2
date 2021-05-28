@@ -3,3 +3,5 @@ export const ImgTarget = "https://hcilab2-1304769744.cos.ap-shanghai.myqcloud.co
 export const IMG_UPLOAD_PREFIX = "/api/imgUpload"
 
 export const WISHLIST_PREFIX = "/api/wishlist"
+
+export const TAG_PREFIX = "/api/tag"

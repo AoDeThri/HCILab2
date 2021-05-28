@@ -137,11 +137,16 @@ def delImageWishlist(name):
     return lines
 
 
-def getImagesWishlist():
+def getImagesWishlist(tags):
     result = []
     with open("database/wishList", "r") as f:
         for line in f:
-            result.append(line.replace("\n", ""))
+            fileName = line.replace("\n", "")
+            tagId = int(line.split(".")[0].split("im")[1])
+            result.append({
+                'file': fileName,
+                'tag': tags[tagId],
+            })
     return result
     pass
 

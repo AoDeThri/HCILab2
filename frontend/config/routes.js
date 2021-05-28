@@ -14,7 +14,7 @@ export default [
             routes: [
               {
                 path: '/',
-                redirect: '/welcome',
+                redirect: '/searchlist',
               },
               {
                 name: '图片搜索',

@@ -1,4 +1,4 @@
-import { Button, Card, List, Typography, Input, Upload, Form, InputNumber } from 'antd'
+import { Button, Card, List, Typography, Input, Upload, Form, InputNumber, Select } from 'antd'
 import { PlusOutlined } from '@ant-design/icons';
 import React, { Component, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
@@ -6,28 +6,26 @@ import { connect } from 'umi';
 import styles from './style.less';
 import { ImgTarget } from '@/target'
 
-const { Paragraph } = Typography;
+const { Option } = Select
 
 class SearchList extends Component {
-  // componentDidMount() {
-  //   const { dispatch } = this.props;
-  //   dispatch({
-  //     type: 'searchList/fetch',
-  //     payload: {
-  //       count: 8,
-  //     },
-  //   });
-  // }
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'searchList/getAllTags',
+    });
+  }
   constructor(props){
     super(props)
     this.state = {
       file: null,
+      tag: "all",
     }
   }
 
   render() {
     const {
-      searchList: { list },
+      searchList: { imgList, tagList },
       loading,
     } = this.props;
     const content = (
@@ -113,9 +111,6 @@ class SearchList extends Component {
 
     const handleAddToWishlist = (name) => {
       const { dispatch } = this.props
-      // const payload = {
-      //   file: name
-      // }
       const payload = new FormData()
       payload.append('file', name)
       dispatch({
@@ -124,26 +119,56 @@ class SearchList extends Component {
       })
     }
 
+    const extraContent = (
+      <Form>
+        <Form.Item
+          label="选择图片类型"
+        >
+          <Select
+            style={{ 
+              width: 120,
+              textAlign: "center", 
+            }}
+            defaultValue="all"
+            onChange={(value) => this.setState({
+              tag: value,
+            })}
+          >
+            <Option value="all"> all </Option>
+            {tagList.map((i) => (
+              <Option value={i}> {i} </Option>
+            ))}
+          </Select>
+        </Form.Item>
+      </Form>
+    )
+
     return (
-      <PageContainer content={content} >
+      <PageContainer content={content} extraContent={extraContent}>
         <div className={styles.cardList}>
           <List
             rowKey="id"
             loading={loading}
             grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 3,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
+              gutter: 5,
+              xs: 5,
+              sm: 5,
+              md: 5,
+              lg: 5,
+              xl: 5,
+              xxl: 5,
             }}
-            dataSource={list}
+            dataSource={imgList}
             renderItem={(item) => {
-              if (item) {
+              const { tag } = this.state
+              const imgTags = item.tag
+              const hidden = !(tag === "all" || imgTags.find((i) => i === tag) !== undefined)
+              if (item.name) {
                 return (
-                  <List.Item key={item.name}>
+                  <List.Item 
+                    key={item.name}
+                    hidden={hidden}
+                  >
                     <Card
                       hoverable
                       className={styles.card}
@@ -165,9 +190,7 @@ class SearchList extends Component {
                       <Card.Meta
                         title={<a>{item.name}</a>}
                         description={
-                          item.tag.map((i) => (
-                            <p>{i}</p>
-                          ))
+                          <div></div>
                         }
                       />
                     </Card>
