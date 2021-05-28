@@ -84,6 +84,7 @@ def upload_img():
             # return redirect(request.url)
             return abort(404)
 
+        k = int(request.form["number"])
         uploadFile = request.files['file']
         print(uploadFile.filename)
         # if user does not select file, browser also
@@ -95,7 +96,7 @@ def upload_img():
             filename = secure_filename(uploadFile.filename)
             uploadFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             inputloc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            tags = recommend(inputloc, extracted_features, tagResult)
+            tags = recommend(inputloc, extracted_features, tagResult, k)
             os.remove(inputloc)
             getImgStatus(tags)
             return jsonify(tags)

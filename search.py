@@ -100,7 +100,7 @@ def run_bottleneck_on_image(sess, image_data, image_data_tensor,
     return bottleneck_values
 
 
-def recommend(imagePath, extracted_features, tagResult):
+def recommend(imagePath, extracted_features, tagResult, k):
     tf.reset_default_graph()
 
     config = tf.ConfigProto(
@@ -115,7 +115,7 @@ def recommend(imagePath, extracted_features, tagResult):
     with open('neighbor_list_recom.pickle', 'rb') as f:
         neighbor_list = pickle.load(f)
     print("loaded images")
-    a = get_top_k_similar(features, extracted_features, neighbor_list, tagResult, k=9)
+    a = get_top_k_similar(features, extracted_features, neighbor_list, tagResult, k)
     return a
 
 
