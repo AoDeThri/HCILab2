@@ -8,6 +8,7 @@
 from flask import Flask, jsonify, abort, request, make_response, url_for, redirect, render_template
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.utils import secure_filename
+from flask_cors import CORS
 import os
 import shutil
 import numpy as np
@@ -23,6 +24,7 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 from tensorflow.python.platform import gfile
 
 app = Flask(__name__, static_url_path="")
+CORS(app, supports_credentials=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 auth = HTTPBasicAuth()
 
@@ -46,7 +48,7 @@ for file in files:
     if file == "README.txt":
         continue
     with open(os.path.join(tagPath, file)) as openFile:
-        tagName = file.split(".")[0].split("_")[0]
+        tagName = file.split(".")[0].split("_r")[0]
         for line in openFile:
             key = int(line)
             try:
@@ -79,18 +81,19 @@ def upload_img():
         # check if the post request has the file part
         if 'file' not in request.files:
             print('No file part')
-            return redirect(request.url)
+            # return redirect(request.url)
+            return abort(404)
 
-        file = request.files['file']
-        print(file.filename)
+        uploadFile = request.files['file']
+        print(uploadFile.filename)
         # if user does not select file, browser also
         # submit a empty part without filename
-        if file.filename == '':
+        if uploadFile.filename == '':
             print('No selected file')
             return redirect(request.url)
-        if file:  # and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        if uploadFile:  # and allowed_file(file.filename):
+            filename = secure_filename(uploadFile.filename)
+            uploadFile.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             inputloc = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             tags = recommend(inputloc, extracted_features, tagResult)
             os.remove(inputloc)

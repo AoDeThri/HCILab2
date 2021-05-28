@@ -58,11 +58,12 @@ def get_top_k_similar(image_data, pred, pred_final, tagResult, k):
         # timestr = datetime.now().strftime("%Y%m%d%H%M%S")
         # name= timestr+"."+str(i)
         name = pred_final[neighbor]
+        tagId = int(name.split(".")[0].split("im")[1])
         tokens = name.split("\\")
         img_name = tokens[-1]
         tagNameResult.append({
             "name": img_name,
-            "tag": tagResult[neighbor],
+            "tag": tagResult[tagId],
             "inWishlist": True
         })
         print(img_name)
@@ -149,7 +150,7 @@ def getImgStatus(names):
     wishlist = []
     with open("database/wishList") as f:
         for line in f:
-            wishlist.append(line)
+            wishlist.append(line.replace("\n", ""))
     for name in names:
         try:
             wishlist.index(name["name"])
