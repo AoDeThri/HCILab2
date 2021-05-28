@@ -82,17 +82,16 @@ class Wishlist extends Component {
               xl: 4,
               xxl: 4,
             }}
-            dataSource={list}
-            renderItem={(item) => {
+            dataSource={list.filter((item) => {
               const { tag } = this.state
               const imgTag = item.tag
-              const hidden = !(tag === "all" || imgTag.find((i) => i === tag) !== undefined)
-              console.log(hidden)
+              return tag === "all" || imgTag.find((i) => i === tag) !== undefined
+            })}
+            renderItem={(item) => {
               if(item.file){
                 return(
                     <List.Item
                       key={item.file}
-                      hidden={hidden}
                     >
                       <Card
                         hoverable

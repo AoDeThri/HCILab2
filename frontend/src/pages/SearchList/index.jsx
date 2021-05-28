@@ -158,16 +158,16 @@ class SearchList extends Component {
               xl: 5,
               xxl: 5,
             }}
-            dataSource={imgList}
-            renderItem={(item) => {
+            dataSource={imgList.filter((item) => {
               const { tag } = this.state
-              const imgTags = item.tag
-              const hidden = !(tag === "all" || imgTags.find((i) => i === tag) !== undefined)
+              const imgTag = item.tag
+              return tag === "all" || imgTag.find((i) => i === tag) !== undefined
+            })}
+            renderItem={(item) => {
               if (item.name) {
                 return (
                   <List.Item 
                     key={item.name}
-                    hidden={hidden}
                   >
                     <Card
                       hoverable
