@@ -6,3 +6,4 @@ saved_features_recom.txt
 /imagenet
 /venv
 /static
+/uploads/*
