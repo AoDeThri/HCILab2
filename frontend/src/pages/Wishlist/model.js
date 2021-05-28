@@ -1,4 +1,4 @@
-import { queryFakeList } from './service';
+import { deleteWishlist, queryWishlist } from './service';
 
 const Model = {
   namespace: 'wishlist',
@@ -6,18 +6,25 @@ const Model = {
     list: [],
   },
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+    *fetch(_, {call, put}){
+      const res = yield call(queryWishlist);
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
-      });
+        type: 'queryWishlist',
+        payload: Array.isArray(res) ? res : [],
+      })
     },
+    *delImg({payload}, {call, put}){
+      const res = yield call(deleteWishlist, payload)
+      yield put({
+        type: 'queryWishlist',
+        payload: Array.isArray(res) ? res : [],
+      })
+    }
   },
   reducers: {
-    queryList(state, action) {
-      return { ...state, list: action.payload };
-    },
+    queryWishlist(state, action){
+      return { ...state, list: action.payload }
+    }
   },
 };
 export default Model;
