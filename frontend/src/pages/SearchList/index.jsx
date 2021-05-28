@@ -1,21 +1,28 @@
+import { Button, Card, List, Typography, Input, Upload, Form, InputNumber } from 'antd'
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Card, List, Typography } from 'antd';
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { PageContainer } from '@ant-design/pro-layout';
 import { connect } from 'umi';
 import styles from './style.less';
+import { ImgTarget } from '@/target'
 
 const { Paragraph } = Typography;
 
 class SearchList extends Component {
-  componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'searchList/fetch',
-      payload: {
-        count: 8,
-      },
-    });
+  // componentDidMount() {
+  //   const { dispatch } = this.props;
+  //   dispatch({
+  //     type: 'searchList/fetch',
+  //     payload: {
+  //       count: 8,
+  //     },
+  //   });
+  // }
+  constructor(props){
+    super(props)
+    this.state = {
+      file: null,
+    }
   }
 
   render() {
@@ -24,38 +31,88 @@ class SearchList extends Component {
       loading,
     } = this.props;
     const content = (
-      <div className={styles.pageHeaderContent}>
-        <p>
-          段落示意：蚂蚁金服务设计平台 ant.design，用最小的工作量，无缝接入蚂蚁金服生态，
-          提供跨越设计与开发的体验解决方案。
-        </p>
-        <div className={styles.contentLink}>
-          <a>
-            <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/MjEImQtenlyueSmVEfUD.svg" />{' '}
-            快速开始
-          </a>
-          <a>
-            <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/NbuDUAuBlIApFuDvWiND.svg" />{' '}
-            产品简介
-          </a>
-          <a>
-            <img alt="" src="https://gw.alipayobjects.com/zos/rmsportal/ohOEPSYdDTNnyMbGuyLb.svg" />{' '}
-            产品文档
-          </a>
-        </div>
+      <div 
+        className={styles.pageHeaderContent}
+        style={{
+          textAlign: "left",
+        }}
+      >
+        <Form
+          onFinish = {(v) => handleOnFinish(v)}
+          initialValues={{
+            number: 9,
+          }}
+        >
+          <Form.Item
+            name="file"
+            label="Image uploading:"
+            rules={[
+              {
+                required: true,
+                message: "Please upload the image."
+              }
+            ]}
+          >
+            <Upload
+              listType="picture-card"
+              maxCount={1}
+              action={(v) => {
+                this.setState({
+                  file: v,
+                })
+              }}
+            >
+            <PlusOutlined/>
+            </Upload>
+          </Form.Item>
+          <Form.Item
+            name="number"
+            label="Number of result:"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the number of result."
+              }
+            ]}
+          >
+            <InputNumber
+              min={1}
+              defaultValue={9}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button 
+              type = "primary" 
+              htmlType="submit"
+              style={{
+                left:"120px"
+              }}
+            >
+              OK
+            </Button>
+          </Form.Item>
+        </Form>
+
       </div>
     );
-    const extraContent = (
-      <div className={styles.extraImg}>
-        <img
-          alt="这是一个标题"
-          src="https://gw.alipayobjects.com/zos/rmsportal/RzwpdLnhmvDJToTdfDPe.png"
-        />
-      </div>
-    );
-    const nullData = {};
+
+    const handleOnFinish = (value) =>{
+      const { dispatch } = this.props;
+      const { file } = this.state
+      const payload = new FormData()
+      payload.append('file', file)
+      payload.append('number', value.number)
+      dispatch({
+        type: 'searchList/uploadFile',
+        headers: {
+          'Content-Type': 'multipart/form-data; boundary=<calculated when request is sent>',
+        },
+        payload,
+      })
+    }
+
     return (
-      <PageContainer content={content} extraContent={extraContent}>
+      <PageContainer content={content} >
         <div className={styles.cardList}>
           <List
             rowKey="id"
@@ -69,42 +126,40 @@ class SearchList extends Component {
               xl: 4,
               xxl: 4,
             }}
-            dataSource={[nullData, ...list]}
+            dataSource={list}
             renderItem={(item) => {
-              if (item && item.id) {
+              if (item) {
                 return (
-                  <List.Item key={item.id}>
+                  <List.Item key={item.name}>
                     <Card
                       hoverable
                       className={styles.card}
-                      actions={[<a key="option1">操作一</a>, <a key="option2">操作二</a>]}
+                      actions={[
+                        <Button 
+                          type="primary"
+                          disabled={item.inWishlist}
+                        >
+                          {item.inWishlist ? "已在收藏夹中":"加入收藏夹"}
+                        </Button>
+                      ]}
+                      cover={
+                        <img
+                          src={ImgTarget + item.name}
+                        />
+                      }
                     >
                       <Card.Meta
-                        avatar={<img alt="" className={styles.cardAvatar} src={item.avatar} />}
-                        title={<a>{item.title}</a>}
+                        title={<a>{item.name}</a>}
                         description={
-                          <Paragraph
-                            className={styles.item}
-                            ellipsis={{
-                              rows: 3,
-                            }}
-                          >
-                            {item.description}
-                          </Paragraph>
+                          item.tag.map((i) => (
+                            <p>{i}</p>
+                          ))
                         }
                       />
                     </Card>
                   </List.Item>
                 );
               }
-
-              return (
-                <List.Item>
-                  <Button type="dashed" className={styles.newButton}>
-                    <PlusOutlined /> 新增产品
-                  </Button>
-                </List.Item>
-              );
             }}
           />
         </div>

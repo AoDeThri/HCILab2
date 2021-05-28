@@ -66,7 +66,7 @@ class Wishlist extends Component {
                         actions={[
                           <Button
                             onClick={() => handleDelImg(item)}
-                          >从愿望单中删除</Button>
+                          >从收藏夹中删除</Button>
                         ]}
                       >
                         <Card.Meta
